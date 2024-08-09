@@ -1,4 +1,3 @@
-from distutils import dir_util
 import os
 import subprocess
 from typing import Iterable
@@ -30,8 +29,9 @@ def call_adb(command: Iterable[str]):
         output = subprocess.check_output([ADB_PATH] + command, stderr=subprocess.PIPE)
     except Exception as e:
         output = e.output
-    output = output.decode('utf-8')
+    output = output.decode("utf-8")
     return output
+
 
 def list_devices():
     return call_adb(["devices"])
@@ -46,6 +46,7 @@ def get_files_to_copy():
         print(f"Directory: {directory}, files: {len(dir_files)}")
         print(dir_files[:10])
     return files
+
 
 def pull_file(filepath: str, destination: str):
     call_adb(["pull", filepath, destination])

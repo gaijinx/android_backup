@@ -1,10 +1,12 @@
 import hashlib
 import os
-from typing import Iterable
-import adb_utils
 from itertools import compress
-from tqdm import tqdm
 from multiprocessing import Pool
+from typing import Iterable
+
+from tqdm import tqdm
+
+import adb_utils
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DIRECTORIES_TO_COPY = [
@@ -61,10 +63,24 @@ def backup_file(filepath: str):
 def get_files_to_backup(workers=10) -> Iterable[str]:
     remote_files = adb_utils.get_files_to_copy()
     with Pool(workers) as p:
-        files_to_pull_mask = list(tqdm(p.imap(is_local_file_different, remote_files), total=len(remote_files), desc="Comparing files", unit="files"))
+        files_to_pull_mask = list(
+            tqdm(
+                p.imap(is_local_file_different, remote_files),
+                total=len(remote_files),
+                desc="Comparing files",
+                unit="files",
+            )
+        )
     return list(compress(remote_files, files_to_pull_mask))
 
 
 def backup_files(file_list: Iterable[str], workers=10):
     with Pool(workers) as p:
-        list(tqdm(p.imap(backup_file, file_list), total=len(file_list), desc="Copying files", unit="files"))
+        list(
+            tqdm(
+                p.imap(backup_file, file_list),
+                total=len(file_list),
+                desc="Copying files",
+                unit="files",
+            )
+        )
